@@ -1,0 +1,71 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Admin {
+  id String @id
+  username String @unique
+}
+
+model Employee {
+  id String @id
+  username String @unique
+  name String 
+  surname String
+  email String?
+  phone String?
+  address String
+  img String?
+  sex UserSex
+  createdAt DateTime @default(now())
+  employerId String
+  employer Employer @relation(fields: [employerId], references: id )
+}
+
+model Employer{
+  id String @id
+  username String @unique
+  name String 
+  surname String
+  email String?
+  phone String?
+  address String
+  img String?
+  sex UserSex
+  createdAt DateTime @default(now())
+  employee Employee[]
+}
+
+model Check_In {
+  id Int @id @defualt(autoincrememnt())
+  time DateTime @default(now())
+  duration Int 
+  employee Id String
+  employee Employee @relation(fields: [employeeId], references: id )
+}
+
+model Check_Out {
+  id Int @id @default(autoincrememnt())
+  time DateTime @default(now())
+  employee Id String
+  employee Employee @relation(fields: [employeeId], references: id )
+  checkInId Int
+  checkIn Check_In @relation(feilds: [checkInId], references: id)
+}
+
+
+enum UserSex {
+  MALE
+  FEMALE
+}
